@@ -25,5 +25,5 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'customfield_textformat';
-$plugin->version   = 2024062600;
+$plugin->version   = 2026092900;
 $plugin->requires  = 2023100400;
