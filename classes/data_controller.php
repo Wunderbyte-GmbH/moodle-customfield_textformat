@@ -24,8 +24,6 @@
 
 namespace customfield_textformat;
 
-defined('MOODLE_INTERNAL') || die;
-
 use core_customfield\api;
 
 /**
@@ -36,7 +34,6 @@ use core_customfield\api;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class data_controller extends \core_customfield\data_controller {
-
     /**
      * Return the name of the field where the information is stored
      * @return string
@@ -58,7 +55,6 @@ class data_controller extends \core_customfield\data_controller {
         $mform->addElement($type, $elementname, $this->get_field()->get_formatted_name(), 'size=' . (int)$config['displaysize']);
         $mform->setType($elementname, PARAM_TEXT);
         if (!empty($config['defaultvalue'])) {
-
             $defaultvalue = $this->get_default_value();
             $mform->setDefault($elementname, $defaultvalue);
         }
@@ -74,7 +70,7 @@ class data_controller extends \core_customfield\data_controller {
      * @param array $files
      * @return array
      */
-    public function instance_form_validation(array $data, array $files) : array {
+    public function instance_form_validation(array $data, array $files): array {
 
         $errors = parent::instance_form_validation($data, $files);
         $maxlength = $this->get_field()->get_configdata_property('maxlength');

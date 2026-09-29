@@ -24,8 +24,6 @@
 
 namespace customfield_textformat;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * Class field
  *
@@ -49,8 +47,12 @@ class field_controller extends \core_customfield\field_controller {
         $mform->addElement('header', 'header_specificsettings', get_string('specificsettings', 'customfield_textformat'));
         $mform->setExpanded('header_specificsettings', true);
 
-        $mform->addElement('text', 'configdata[defaultvalue]', get_string('defaultvalue', 'core_customfield'),
-            ['size' => 50]);
+        $mform->addElement(
+            'text',
+            'configdata[defaultvalue]',
+            get_string('defaultvalue', 'core_customfield'),
+            ['size' => 50]
+        );
         $mform->setType('configdata[defaultvalue]', PARAM_TEXT);
 
         $mform->addElement('text', 'configdata[displaysize]', get_string('displaysize', 'customfield_textformat'), ['size' => 6]);
@@ -76,14 +78,18 @@ class field_controller extends \core_customfield\field_controller {
 
         $mform->disabledIf('configdata[link]', 'configdata[ispassword]', 'eq', 1);
 
-        $linkstargetoptions = array(
+        $linkstargetoptions = [
             ''       => get_string('none', 'customfield_textformat'),
             '_blank' => get_string('newwindow', 'customfield_textformat'),
             '_self'  => get_string('sameframe', 'customfield_textformat'),
-            '_top'   => get_string('samewindow', 'customfield_textformat')
+            '_top'   => get_string('samewindow', 'customfield_textformat'),
+        ];
+        $mform->addElement(
+            'select',
+            'configdata[linktarget]',
+            get_string('linktarget', 'customfield_textformat'),
+            $linkstargetoptions
         );
-        $mform->addElement('select', 'configdata[linktarget]', get_string('linktarget', 'customfield_textformat'),
-            $linkstargetoptions);
 
         $mform->disabledIf('configdata[linktarget]', 'configdata[link]', 'eq', '');
     }
@@ -95,7 +101,7 @@ class field_controller extends \core_customfield\field_controller {
      * @param array $files
      * @return array associative array of error messages
      */
-    public function config_form_validation(array $data, $files = array()) : array {
+    public function config_form_validation(array $data, $files = []): array {
         global $CFG;
         $errors = parent::config_form_validation($data, $files);
 
@@ -145,8 +151,11 @@ class field_controller extends \core_customfield\field_controller {
         foreach ($values as $value) {
             $ret[$value] = format_string($value);
         }
-        $ret[BLOCK_MYOVERVIEW_CUSTOMFIELD_EMPTY] = get_string('nocustomvalue', 'block_myoverview',
-            $this->get_formatted_name());
+        $ret[BLOCK_MYOVERVIEW_CUSTOMFIELD_EMPTY] = get_string(
+            'nocustomvalue',
+            'block_myoverview',
+            $this->get_formatted_name()
+        );
         return $ret;
     }
 }
