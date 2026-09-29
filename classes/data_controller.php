@@ -94,8 +94,30 @@ class data_controller extends \core_customfield\data_controller {
      */
     public function get_default_value() {
         $defaultvalue = $this->get_field()->get_configdata_property('defaultvalue');
-        $defaultvalue = format_text($defaultvalue);
+        $pagecontext = $this->get_page_context();
+        if ($pagecontext === null) {
+            // No page yet: return the configured value, shortcodes stay unresolved.
+            return strip_tags((string) $defaultvalue);
+        }
+        $defaultvalue = format_text($defaultvalue, FORMAT_HTML, ['context' => $pagecontext]);
         return strip_tags($defaultvalue);
+    }
+
+    /**
+     * Returns the page context if the caller has already set one, otherwise null.
+     *
+     * Some callers run before any page context exists, e.g. report builder web services build the report
+     * before validate_context(). Reading $PAGE->context there throws in AJAX developer mode and otherwise
+     * switches the page to system context, and filters touch the page even with an explicit context.
+     * So the page context is read without the magic getter.
+     *
+     * @return \context|null
+     */
+    protected function get_page_context(): ?\context {
+        global $PAGE;
+        // Reads moodle_page::$_context directly; if core renames it, this returns null and nothing is formatted.
+        $pagecontext = \Closure::bind(fn() => $this->_context ?? null, $PAGE, \moodle_page::class)();
+        return $pagecontext instanceof \context ? $pagecontext : null;
     }
 
     /**
